@@ -15,7 +15,7 @@
     <PackageIcon>favicon.png</PackageIcon>
     <PackageIconUrl />
     <PackageTags>json,dynamic mapping,map</PackageTags>
-    <RepositoryUrl>https://github.com/vahidarya14/Redmask.Taghelpers</RepositoryUrl>
+    <RepositoryUrl>https://github.com/vahidarya14/RM.JsonMapper</RepositoryUrl>
     <Description>
       Map json object to another json dynamiclly using config
     </Description>
