@@ -13,7 +13,15 @@ public static class JsonNodeExt
 
     public static JsonNode? Add(this JsonNode? node, string prop, JsonNode val)
     {
-        node[prop] = val;
+        try
+        {
+            node[prop] = val;
+        }
+        catch (Exception)
+        {
+            node[prop] = JsonValue.Create(val.ToString());// "--error";
+        }
+
         return node;
     }
 }
