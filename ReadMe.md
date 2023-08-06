@@ -1,17 +1,13 @@
 # JsonMapper 
 
 ## Description
-
 Map json object to another json dynamiclly using config  
+source code: https://github.com/vahidarya14/RM.JsonMapper
 
 #### sample usage source:
-
-```
-        var sourceObject=new Source()
-        {
-            //...
-        };
-        var config = @"
+with this config rule
+```csharp
+        string _config = @"
 f: FirstName,
 l: LastName,
 t:x.y.z.title,
@@ -23,14 +19,32 @@ a2:arr[2],
 a2b:arr[2].b,
 arr:arr
 ";
+```
+there are two ways to map jsons
 
+using this keeps [mapping config] as rule and does all  mapping using this config. no need to pass config as parameter every time
+```csharp
+ var mapper = new JsonMapper(_config);
+```
+or using **static function** without makeing instance of JsonMapper.it doen't keep any states and just fires and forgets
+```csharp
+    JsonMapper.Map<Source, Dest>(sourceObject, _config);
+```
 
-        var destinationObject = new JsonMapper().Map<Source, Dest>(sourceObject, config);
+### more sample
+```csharp
+        var sourceObject=new Source()
+        {
+            //...
+        };
+
+        var destObj = new JsonMapper(_config).Map<Source, Dest>(sourceObject);
+        var destObjUsingStatic = JsonMapper.Map<Source, Dest>(sourceObject, _config);
+        var destObjUsingWithConfig = new JsonMapper().WithConfig(_config).Map<Source, Dest>(sourceObject);
 ```
 or
-```
-        var json =
-    @"{
+```csharp
+        string _json = @"{
         FirstName: ""Audrey"",
         ""LastName"": ""Spencer"",
         ""ContactDetails"": {
@@ -45,19 +59,7 @@ or
         },
         arr:[{a:'a1',b:'b1'},{a:'a2',b:'b2'},{a:'a3',b:'b3'}]
     }";
-        var config = @"
-f: FirstName,
-l: LastName,
-t:x.y.z.title,
-n.m.f:FirstName,
-p.q.r.f:FirstName,
-p.q.r.l:LastName,
-c.c:ContactDetails.Country,
-a2:arr[2],
-a2b:arr[2].b,
-arr:arr
-";
 
-
-        var jRes =new JsonMapper().Map(json,config);
+    var destObj = new JsonMapper(_config).Map< Dest>(_json);
+    var destinationObject = JsonMapper.Map<Dest>(_json,_config);
 ```
