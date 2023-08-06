@@ -1,16 +1,18 @@
-﻿using Newtonsoft.Json.Linq;
+﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System.Text.Json;
+using System.Text.Json.Nodes;
 
 namespace RM.JsonMapper;
 public class JsonMapperBase
 {
-    public static JObject Map(string fromJson, string mappingConfig)
+    public static JsonNode Map(string fromJson, string mappingConfig)
     {
-        Dictionary<string, (JTokenType Type, string Val)> _dic = new ();
+        Dictionary<string, (JsonTokenType Type, string Val)> _dic = new ();
 
         JsonToDic(_dic, fromJson, "");
 
-        var jResult = JObject.Parse("{}");
+        var jResult = JsonObject.Parse("{}");
         var mappings = mappingConfig.Replace("\r\n", "").Split(new[] { ',', ':' }, StringSplitOptions.RemoveEmptyEntries).Select(x => x.Trim()).ToList();
         var i = -1;
         var comment = false;
@@ -31,7 +33,7 @@ public class JsonMapperBase
             {
                 var p = mappings[i + 1].Split('[');
                 //var index = mappings[i + 1].Substring(mappings[i + 1].IndexOf('[')).Substring(mappings[i + 1].IndexOf(']'));
-                var arr = JArray.Parse(_dic[p[0]].Val);
+                var arr = JsonArray.Parse(_dic[p[0]].Val);
             }
 
             if (!_dic.ContainsKey(mapping))
@@ -40,12 +42,12 @@ public class JsonMapperBase
                 if (mappings[i + 1].Contains("]."))
                 {
                     var p = mappings[i + 1].Split('.');
-                    var val1 = JObject.Parse(_dic[p[0]].Val.Replace("\r\n", "").Replace("\\\"", "\""));
+                    var val1 = JsonObject.Parse(_dic[p[0]].Val.Replace("\r\n", "").Replace("\\\"", "\""));
 
-                    var jObj22 = JObject.Parse(_dic[p[0]].Val);
+                    var jObj22 = JsonObject.Parse(_dic[p[0]].Val);
                     for (int i2 = 1; i2 < p.Length - 1; i2++)
                     {
-                        jObj22 = (JObject)jObj22[p[i2]];
+                        jObj22 = (JsonObject)jObj22[p[i2]];
                     }
 
                     jResult.Add(mapping, jObj22[p[p.Length - 1]]);
@@ -78,13 +80,13 @@ public class JsonMapperBase
             }
             else
             {
-                if (typ == JTokenType.String)
+                if (typ == JsonTokenType.String)
                     jResult.Add(prop, val);
-                else if (typ == JTokenType.Array)
-                    jResult.Add(prop, JArray.Parse(val));
+                else if (typ == JsonTokenType.StartArray)
+                    jResult.Add(prop, JsonArray.Parse(val));
                 else
                 {
-                    var jObj22 = JObject.Parse(val);
+                    var jObj22 = JsonObject.Parse(val);
                     jResult.Add(prop, jObj22);
                 }
             }
@@ -100,7 +102,7 @@ public class JsonMapperBase
          where TDestination : class, new()
          where TSource : class
     {
-        var source=JsonSerializer.Serialize(fromJson);
+        var source= System.Text.Json.JsonSerializer.Serialize(fromJson);
         return Map(source, mappingConfig).ToObject<TDestination>();
     }
 
@@ -110,23 +112,23 @@ public class JsonMapperBase
     
 
 
-    static JToken AddPropToExsistingObjectProp(string? val, string[] p, JToken? jObj22)
+    static JsonNode AddPropToExsistingObjectProp(string? val, string[] p, JsonNode? jObj22)
     {
         for (int i2 = 1; i2 < p.Length - 1; i2++)
             jObj22 = jObj22[p[i2]];
 
-        ((JObject)jObj22).Add(p[p.Length - 1], val);
+        ((JsonObject)jObj22).Add(p[p.Length - 1], val);
         return jObj22;
     }
 
-    static void AddObjectProp(JObject jRes, string? val, string[] p)
+    static void AddObjectProp(JsonNode jRes, string? val, string[] p)
     {
-        var jObj = JObject.Parse("{}");
+        var jObj = JsonObject.Parse("{}");
         jObj.Add(p[p.Length - 1], val);
 
         for (int i2 = p.Length - 2; i2 > 0; i2--)
         {
-            var _jObj = JObject.Parse("{}");
+            var _jObj = JsonObject.Parse("{}");
             _jObj.Add(p[i2], jObj);
             jObj = _jObj;
         }
@@ -134,24 +136,28 @@ public class JsonMapperBase
         jRes.Add(p[0], jObj);
     }
 
-    static void JsonToDic(Dictionary<string, (JTokenType Type, string Val)> _dic,string jsonObj, string parent)
+    static void JsonToDic(Dictionary<string, (JsonTokenType Type, string Val)> _dic,string jsonObj, string parent)
     {
-        var jso = JObject.Parse(jsonObj);
-        foreach (var jProp in jso)
+        var dictionary = JsonConvert.DeserializeObject<Dictionary<string, object?>>(jsonObj);
+
+        foreach (var jProp in dictionary)
         {
             var k = jProp.Key;
             var v = jProp.Value;
-            if (!v.HasValues)
-                _dic.Add(parent + k, (v.Type, v.ToString()));
+            var t = v.GetType().Name;
+            var isObject=v.GetType()==typeof(JObject);
+            var isArray = v.GetType() == typeof(JArray);
+            if (!isObject && !isArray)
+                _dic.Add(parent + k, (JsonTokenType.String, v.ToString()));
             else
             {
-                if (v.Type == JTokenType.Array)
+                if (isArray)
                 {
                     for (int i = 0; i < k.Length; i++)
                     {
-                        _dic.Add(parent + k + "[" + i + "]", (JTokenType.Object, v[i].ToString()));
+                        _dic.Add(parent + k + "[" + i + "]", (JsonTokenType.StartObject, ((JArray)v)[i].ToString()));
                     }
-                    _dic.Add(parent + k, (v.Type, v.ToString()));
+                    _dic.Add(parent + k, (JsonTokenType.StartArray, v.ToString()));
                 }
                 else
                     JsonToDic(_dic, v.ToString(), parent + k + ".");
