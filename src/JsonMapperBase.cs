@@ -1,6 +1,5 @@
 ﻿using System.Text.Json;
 using System.Text.Json.Nodes;
-using System.Text.Json.Serialization;
 
 namespace RM.JsonMapper;
 public class JsonMapperBase
@@ -96,7 +95,7 @@ public class JsonMapperBase
          where TDestination : class, new()
          where TSource : class
     {
-        var source= System.Text.Json.JsonSerializer.Serialize(fromJson);
+        var source= JsonSerializer.Serialize(fromJson);
         return Map(source, mappingConfig).ToObject<TDestination>();
     }
 
@@ -117,12 +116,12 @@ public class JsonMapperBase
 
     static void AddObjectProp(JsonNode jRes, string? val, string[] p)
     {
-        var jObj = JsonObject.Parse("{}");
+        var jObj = JsonNode.Parse("{}");
         jObj.Add(p[p.Length - 1], val);
 
         for (int i2 = p.Length - 2; i2 > 0; i2--)
         {
-            var _jObj = JsonObject.Parse("{}");
+            var _jObj = JsonNode.Parse("{}");
             _jObj.Add(p[i2], jObj);
             jObj = _jObj;
         }
@@ -138,10 +137,8 @@ public class JsonMapperBase
         {
             var k = jProp.Key;
             var v = jProp.Value;
-            var kind = ((JsonElement)v).ValueKind;
-
-            var isObject= kind==JsonValueKind.Object;
-            var isArray = kind==JsonValueKind.Array;
+            var isObject= v.Value.ValueKind == JsonValueKind.Object;
+            var isArray = v.Value.ValueKind == JsonValueKind.Array;
             if (!isObject && !isArray)
                 _dic.Add(parent + k, (JsonTokenType.String, v.ToString()));
             else
