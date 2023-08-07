@@ -2,6 +2,7 @@
 
 ## Description
 Map json object to another json dynamiclly using config  
+download source and more example : https://github.com/vahidarya14/RM.JsonMapper
 
 #### sample usage source:
 with this config rule
@@ -61,4 +62,25 @@ or
 
     var destObj = new JsonMapper(_config).Map< Dest>(_json);
     var destinationObject = JsonMapper.Map<Dest>(_json,_config);
+```
+for inline list mapping config
+```csharp
+ string _config = @"
+Year: Year,
+Arr:Arr{
+        AgeOfVehicle:Age,
+        FullName:Name
+    }
+";
+    _source =new Source3{
+            Year=1986,
+            Arr=new List<Arr3>
+            {
+                new Arr3(){Age=20,Name="ford"},
+                new Arr3(){Age=30,Name="benz"}
+            }
+        };
+
+ var destObj = new JsonMapper(_config).Map<Source3, Dest3>(_source);
+
 ```

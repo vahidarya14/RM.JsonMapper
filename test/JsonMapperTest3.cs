@@ -28,7 +28,7 @@ Arr:Arr{
 
 
     [Test]
-    public void destObj_equals_destObjUsingStatic()
+    public void inner_list_cinfig_support()
     {
         var destObj = new JsonMapper(_config).Map<Source3, Dest3>(_source);
         Assert.Multiple(() =>
