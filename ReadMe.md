@@ -64,17 +64,25 @@ or
     var destinationObject = JsonMapper.Map<Dest>(_json,_config);
 ```
 for inline list mapping config
+```
+ArrTarget:ArrSource{
+        AgeOfVehicle:Age,
+        FullName:Name
+    }
+```
+
+here is the complete sample
 ```csharp
  string _config = @"
 Year: Year,
-Arr:Arr{
+ArrTarget:ArrSource{
         AgeOfVehicle:Age,
         FullName:Name
     }
 ";
     _source =new Source3{
             Year=1986,
-            Arr=new List<Arr3>
+            ArrSource=new List<Arr3>
             {
                 new Arr3(){Age=20,Name="ford"},
                 new Arr3(){Age=30,Name="benz"}
