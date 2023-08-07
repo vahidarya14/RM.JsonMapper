@@ -44,14 +44,14 @@ arr2:arr
     public void destObj_equals_destObjUsingStatic()
     {
         var destObj = new JsonMapper(_config).Map<Source2, Dest2>(_source);
-
-        Assert.That(destObj.p.q.r.f, Is.EqualTo(_source.arr[1].c[1].a));
-        Assert.That(destObj.p.q.r.l, Is.EqualTo(_source.arr[1].c[1].b));
-        Assert.That(destObj.a1.a, Is.EqualTo(_source.arr[1].a));
-        Assert.That(destObj.a1.c.Count, Is.EqualTo(_source.arr[1].c.Count));
-        Assert.That(destObj.a1c1b, Is.EqualTo(_source.arr[1].c[1].b));
-        Assert.That(destObj.arr2.Count, Is.EqualTo(_source.arr.Count));
+        Assert.Multiple(() =>
+        {
+            Assert.That(destObj.p.q.r.f, Is.EqualTo(_source.arr[1].c[1].a));
+            Assert.That(destObj.p.q.r.l, Is.EqualTo(_source.arr[1].c[1].b));
+            Assert.That(destObj.a1.a, Is.EqualTo(_source.arr[1].a));
+            Assert.That(destObj.a1.c.Count, Is.EqualTo(_source.arr[1].c.Count));
+            Assert.That(destObj.a1c1b, Is.EqualTo(_source.arr[1].c[1].b));
+            Assert.That(destObj.arr2.Count, Is.EqualTo(_source.arr.Count));
+        });
     }
-
-
 }

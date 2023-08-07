@@ -3,7 +3,7 @@ using System.Text.Json;
 
 namespace test;
 
-public class JsonMapperTest
+public class JsonMapperTest1
 {
     string _config = @"
 f: FirstName,
@@ -45,17 +45,19 @@ arr2:arr
     {
         var destObj = new JsonMapper(_config).Map<Source, Dest>(_source);
         var destObjUsingStatic = JsonMapperBase.Map<Source, Dest>(_source, _config);
+        Assert.Multiple(() =>
+        {
+            Assert.That(destObj.c.c, Is.EqualTo(_source.ContactDetails.Country));
+            Assert.That(destObj.n.m.f, Is.EqualTo(_source.FirstName));
+            Assert.That(destObj.p.q.r.l, Is.EqualTo(_source.LastName));
+            Assert.That(destObj.a2, Is.EqualTo(_source.arr[2]));
+            Assert.That(destObj.a2b, Is.EqualTo(_source.arr[2].b));
 
-        Assert.That(destObj.c.c, Is.EqualTo(_source.ContactDetails.Country));
-        Assert.That(destObj.n.m.f, Is.EqualTo(_source.FirstName));
-        Assert.That(destObj.p.q.r.l, Is.EqualTo(_source.LastName));
-        Assert.That(destObj.a2, Is.EqualTo(_source.arr[2]));
-        Assert.That(destObj.a2b, Is.EqualTo(_source.arr[2].b));
-
-        Assert.That(destObjUsingStatic.c, Is.EqualTo(destObj.c));
-        Assert.That(destObjUsingStatic.n, Is.EqualTo(destObj.n));
-        Assert.That(destObjUsingStatic.p, Is.EqualTo(destObj.p));
-        Assert.That(destObjUsingStatic.a2, Is.EqualTo(destObj.a2));
+            Assert.That(destObjUsingStatic.c, Is.EqualTo(destObj.c));
+            Assert.That(destObjUsingStatic.n, Is.EqualTo(destObj.n));
+            Assert.That(destObjUsingStatic.p, Is.EqualTo(destObj.p));
+            Assert.That(destObjUsingStatic.a2, Is.EqualTo(destObj.a2));
+        });
     }
 
     [Test]
