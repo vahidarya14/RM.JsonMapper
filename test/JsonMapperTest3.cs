@@ -5,50 +5,63 @@ namespace test;
 public class JsonMapperTest3
 {
     string _config = @"
-f: FirstName,
-t:x.y.z.title,
-p.q.r.f:arr[1].c[1].a,
-p.q.r.l:arr[1].c[1].b,
-a1:arr[1],
-a1c:arr[1].c,
-a1c2:arr[1].c[2],
-a1c1b:arr[1].c[1].b,
-arr2:arr
+Year: Year,
+Arr:Arr{
+        AgeOfVehicle:Age,
+        FullName:Name
+    }
 ";
-    List<Source2> _source;
+    Source3 _source;
 
     [SetUp]
     public void Setup()
     {
-        _source = new List<Source2>{
-            new Source2
+        _source =new Source3{
+            Year=1986,
+            Arr=new List<Arr3>
             {
-                FirstName = "vahid",
-                LastName = "arya",
-                x = new x2
-                {
-                    y = new y2
-                    {
-                        z = new z2 { title = "t_54" }
-                    }
-                },
-                arr = new List<arr2>
-                {
-                    new arr2{a="a1",c=new List<arr2c>{new arr2c{a="a1",b="b1"}, new arr2c { a = "a2", b = "b2" }, new arr2c { a = "a3", b = "b3" } } },
-                    new arr2{a="a2",c=new List<arr2c>{new arr2c{a="a1",b="b1"}, new arr2c { a = "a2", b = "b2" }, new arr2c { a = "a3", b = "b3" } } }
-                }
+                new Arr3(){Age=20,Name="ford"},
+                new Arr3(){Age=30,Name="benz"}
             }
         };
     }
 
+
     [Test]
     public void destObj_equals_destObjUsingStatic()
     {
-        var destObj = new JsonMapper(_config).MapList<Source2, Dest2>(_source);
-
-
-        Assert.That (_source.Count, Is.EqualTo(destObj.Count));
+        var destObj = new JsonMapper(_config).Map<Source3, Dest3>(_source);
+        Assert.Multiple(() =>
+        {
+            Assert.That(destObj.Year, Is.EqualTo(_source.Year));
+            for (int i = 0; i < destObj.Arr.Count; i++)
+            {
+                Assert.That(destObj.Arr[i].AgeOfVehicle, Is.EqualTo(_source.Arr[i].Age));
+                Assert.That(destObj.Arr[i].FullName, Is.EqualTo(_source.Arr[i].Name));
+            }
+        });
     }
 
+}
 
+class Source3
+{
+    public int Year { get; set; }
+    public List<Arr3> Arr { get; set; }
+}
+class Arr3
+{
+    public int Age { get; set; }
+    public string Name { get; set; }
+}
+
+class Dest3
+{
+    public int Year { get; set; }
+    public List<ArrDest3> Arr { get; set; }
+}
+class ArrDest3
+{
+    public int AgeOfVehicle { get; set; }
+    public string FullName { get; set; }
 }

@@ -17,6 +17,7 @@ a1c1b:arr[1].c[1].b,
 arr2:arr
 ";
     Source2 _source;
+    List<Source2> _sourceList;
 
     [SetUp]
     public void Setup()
@@ -38,6 +39,26 @@ arr2:arr
                 new arr2{a="a2",c=new List<arr2c>{new arr2c{a="a1",b="b1"}, new arr2c { a = "a2", b = "b2" }, new arr2c { a = "a3", b = "b3" } } }
             }
         };
+
+        _sourceList = new List<Source2>{
+            new Source2
+            {
+                FirstName = "vahid",
+                LastName = "arya",
+                x = new x2
+                {
+                    y = new y2
+                    {
+                        z = new z2 { title = "t_54" }
+                    }
+                },
+                arr = new List<arr2>
+                {
+                    new arr2{a="a1",c=new List<arr2c>{new arr2c{a="a1",b="b1"}, new arr2c { a = "a2", b = "b2" }, new arr2c { a = "a3", b = "b3" } } },
+                    new arr2{a="a2",c=new List<arr2c>{new arr2c{a="a1",b="b1"}, new arr2c { a = "a2", b = "b2" }, new arr2c { a = "a3", b = "b3" } } }
+                }
+            }
+        };
     }
 
     [Test]
@@ -54,4 +75,15 @@ arr2:arr
             Assert.That(destObj.arr2.Count, Is.EqualTo(_source.arr.Count));
         });
     }
+
+
+    [Test]
+    public void list_mappingc()
+    {
+        var destObj = new JsonMapper(_config).MapList<Source2, Dest2>(_sourceList);
+
+
+        Assert.That(_sourceList.Count, Is.EqualTo(destObj.Count));
+    }
+
 }
