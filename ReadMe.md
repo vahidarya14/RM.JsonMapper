@@ -2,7 +2,6 @@
 
 ## Description
 Map json object to another json dynamiclly using config  
-source code: https://github.com/vahidarya14/RM.JsonMapper
 
 #### sample usage source:
 with this config rule

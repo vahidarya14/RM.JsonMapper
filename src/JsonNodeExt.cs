@@ -7,7 +7,15 @@ public static class JsonNodeExt
 {
     public static TDestination ToObject<TDestination>(this JsonNode node)
     {
-        return JsonSerializer.Deserialize<TDestination>(node);
+        try
+        {
+            return JsonSerializer.Deserialize<TDestination>(node);
+        }
+        catch (Exception ex)
+        {
+            throw ex;
+        }
+
     }
 
 

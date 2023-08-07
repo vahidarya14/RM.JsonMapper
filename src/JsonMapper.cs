@@ -1,4 +1,5 @@
-﻿using System.Runtime.CompilerServices;
+﻿using System.Collections;
+using System.Runtime.CompilerServices;
 using System.Text.Json;
 
 namespace RM.JsonMapper;
@@ -24,10 +25,36 @@ public class JsonMapper: JsonMapperBase
     }
 
 
+    public List<TDestination> MapList<TSource, TDestination>(List<TSource> from)
+      where TDestination : class, new()
+      where TSource : class
+    {   
+        var res = new List<TDestination>();
+        if (from.GetType().GetGenericTypeDefinition() == typeof(List<>))
+        {
+            var lst = from as IList;
+        
+            foreach (var item in lst)
+            {
+                var r = Map<TDestination>(JsonSerializer.Serialize(item));
+                res.Add(r);
+            }
+        }
+        else
+        {
+            var r = Map<TDestination>(JsonSerializer.Serialize(from));
+            res.Add(r);
+        }
+
+        return res;
+    }
+
     public TDestination Map<TSource, TDestination>(TSource from)
-        where TDestination : class,new()
+        where TDestination : class, new()
         where TSource : class
-                                            => Map<TDestination>(JsonSerializer.Serialize(from));
+    {
+        return Map<TDestination>(JsonSerializer.Serialize(from));
+    }
 
     public TDestination Map<TDestination>( string fromJson)
               where TDestination : class, new()
