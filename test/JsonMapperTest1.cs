@@ -44,7 +44,7 @@ arr2:arr
     public void destObj_equals_destObjUsingStatic()
     {
         var destObj = new JsonMapper(_config).Map< Dest>(_source);
-        var destObjUsingStatic = JsonMapperBase.Map<Source, Dest>(_source, _config);
+        var destObjUsingStatic = JsonMapperBase.Map< Dest>(_source, _config);
         Assert.Multiple(() =>
         {
             Assert.That(destObj.c.c, Is.EqualTo(_source.ContactDetails.Country));

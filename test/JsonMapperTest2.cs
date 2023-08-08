@@ -76,11 +76,19 @@ arr2:arr
     }
 
 
-    [Test]
-    public void list_mappingc()
-    {
-        var destObj = new JsonMapper(_config).MapList<Source2, Dest2>(_sourceList);
+    //[Test]
+    //public void list_mapping()
+    //{
+    //    var destObj = new JsonMapper(_config).MapList<Source2, Dest2>(_sourceList);
 
+
+    //    Assert.That(_sourceList.Count, Is.EqualTo(destObj.Count));
+    //}
+
+    [Test]
+    public void list_mapping2()
+    {
+        var destObj = new JsonMapper(_config).MapList<Dest2>(_sourceList);
 
         Assert.That(_sourceList.Count, Is.EqualTo(destObj.Count));
     }
