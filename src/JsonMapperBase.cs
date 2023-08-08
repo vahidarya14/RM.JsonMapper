@@ -4,12 +4,14 @@ using System.Text.Json.Nodes;
 namespace RM.JsonMapper;
 public class JsonMapperBase
 {
-    public static TDestination Map<TDestination>(object fromObject, string mappingConfig)
-        where TDestination : class, new() 
-        => Map(JsonSerializer.Serialize(fromObject), mappingConfig).ToObject<TDestination>();
 
-    public static TDestination Map<TDestination>(string fromJson, string mappingConfig) where TDestination : class, new()
-        => Map(fromJson, mappingConfig).ToObject<TDestination>();
+    public static TToType Map<TToType>(object fromObject, string mappingConfig)
+        where TToType : class, new() 
+        => Map(JsonSerializer.Serialize(fromObject), mappingConfig).ToObject<TToType>();
+
+
+    public static TToType Map<TToType>(string fromJson, string mappingConfig) where TToType : class, new()
+        => Map(fromJson, mappingConfig).ToObject<TToType>();
 
 
 

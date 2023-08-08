@@ -25,53 +25,53 @@ public class JsonMapper : JsonMapperBase
     }
 
 
-    public List<TDestination> MapList< TDestination>(IEnumerable fromList)
-        where TDestination : class, new()
+    public List<TToType> MapList< TToType>(IEnumerable fromList)
+        where TToType : class, new()
     {
-        var res = new List<TDestination>();
+        var res = new List<TToType>();
         if (fromList.GetType().GetGenericTypeDefinition() == typeof(List<>))
         {
-            res.AddRange(fromList.OfType<object>().Select(item => Map<TDestination>(JsonSerializer.Serialize(item))));
+            res.AddRange(fromList.OfType<object>().Select(item => Map<TToType>(JsonSerializer.Serialize(item))));
         }
         else
-            res.Add(Map<TDestination>(JsonSerializer.Serialize(fromList)));
+            res.Add(Map<TToType>(JsonSerializer.Serialize(fromList)));
 
         return res;
     }
 
 
-    public TDestination Map<TDestination>(object fromObject)
-        where TDestination : class, new()
-        => Map<TDestination>(JsonSerializer.Serialize(fromObject));
+    public TToType Map<TToType>(object fromObject)
+        where TToType : class, new()
+        => Map<TToType>(JsonSerializer.Serialize(fromObject));
 
-    public TDestination Map<TDestination>(string fromJson)
-        where TDestination : class, new()
-        => Map(fromJson, _mappingConfig).ToObject<TDestination>();
+    public TToType Map<TToType>(string fromJson)
+        where TToType : class, new()
+        => Map(fromJson, _mappingConfig).ToObject<TToType>();
 
     public string Map(string fromJson)
         => Map(fromJson, _mappingConfig).ToJsonString();
 
 
     [Obsolete]
-    public List<TDestination> MapList<TSource, TDestination>(List<TSource> fromList)
-     where TDestination : class, new()
+    public List<TToType> MapList<TSource, TToType>(List<TSource> fromList)
+     where TToType : class, new()
      where TSource : class
     {
-        var res = new List<TDestination>();
+        var res = new List<TToType>();
         if (fromList.GetType().GetGenericTypeDefinition() == typeof(List<>))
         {
             res = (from item in fromList
-                   select Map<TDestination>(JsonSerializer.Serialize(item))).ToList();
+                   select Map<TToType>(JsonSerializer.Serialize(item))).ToList();
         }
         else
-            res.Add(Map<TDestination>(JsonSerializer.Serialize(fromList)));
+            res.Add(Map<TToType>(JsonSerializer.Serialize(fromList)));
 
         return res;
     }
 
     [Obsolete]
-    public TDestination Map<TSource, TDestination>(TSource from)
-        where TDestination : class, new()
+    public TToType Map<TSource, TToType>(TSource from)
+        where TToType : class, new()
         where TSource : class
-        => Map<TDestination>(JsonSerializer.Serialize(from));
+        => Map<TToType>(JsonSerializer.Serialize(from));
 }
