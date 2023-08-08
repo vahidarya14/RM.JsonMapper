@@ -44,6 +44,9 @@ public class JsonMapper : JsonMapperBase
         where TToType : class, new()
         => Map<TToType>(JsonSerializer.Serialize(fromObject));
 
+    public string Map(object fromObject)
+        => Map(JsonSerializer.Serialize(fromObject));
+
     public TToType Map<TToType>(string fromJson)
         where TToType : class, new()
         => Map(fromJson, _mappingConfig).ToObject<TToType>();
