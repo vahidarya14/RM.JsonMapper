@@ -2,7 +2,7 @@
 
 namespace RM.JsonMapper;
 
-public class JsonMapper: JsonMapperBase
+public class JsonMapper : JsonMapperBase
 {
     string _mappingConfig;
     public JsonMapper(string mappingConfig)
@@ -24,29 +24,37 @@ public class JsonMapper: JsonMapperBase
 
 
     public List<TDestination> MapList<TSource, TDestination>(List<TSource> fromList)
-      where TDestination : class, new()
-      where TSource : class
-    {   
+         where TDestination : class, new()
+         where TSource : class
+    {
         var res = new List<TDestination>();
         if (fromList.GetType().GetGenericTypeDefinition() == typeof(List<>))
         {
-            res=(from item in fromList
-                         select Map<TDestination>(JsonSerializer.Serialize(item))).ToList();
+            res = (from item in fromList
+                   select Map<TDestination>(JsonSerializer.Serialize(item))).ToList();
         }
         else
             res.Add(Map<TDestination>(JsonSerializer.Serialize(fromList)));
-        
+
         return res;
     }
 
+
+    [Obsolete]
     public TDestination Map<TSource, TDestination>(TSource from)
         where TDestination : class, new()
-        where TSource : class
-    {
-        return Map<TDestination>(JsonSerializer.Serialize(from));
-    }
+        where TSource : class 
+        => Map<TDestination>(JsonSerializer.Serialize(from));
 
-    public TDestination Map<TDestination>( string fromJson)
-              where TDestination : class, new()
-                                            => Map(fromJson, _mappingConfig).ToObject<TDestination>();
+
+    public TDestination Map<TDestination>(object fromObject)
+        where TDestination : class, new() 
+        => Map<TDestination>(JsonSerializer.Serialize(fromObject));
+
+    public TDestination Map<TDestination>(string fromJson)
+        where TDestination : class, new()
+        => Map(fromJson, _mappingConfig).ToObject<TDestination>();
+
+    public string Map(string fromJson) 
+        => Map(fromJson, _mappingConfig).ToJsonString();
 }

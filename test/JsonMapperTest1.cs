@@ -43,7 +43,7 @@ arr2:arr
     [Test]
     public void destObj_equals_destObjUsingStatic()
     {
-        var destObj = new JsonMapper(_config).Map<Source, Dest>(_source);
+        var destObj = new JsonMapper(_config).Map< Dest>(_source);
         var destObjUsingStatic = JsonMapperBase.Map<Source, Dest>(_source, _config);
         Assert.Multiple(() =>
         {
@@ -63,8 +63,8 @@ arr2:arr
     [Test]
     public void destObj_equals_destObjUsingWithConfig()
     {
-        var destObj = new JsonMapper(_config).Map<Source, Dest>(_source);
-        var destObjUsingWithConfig = new JsonMapper("--").WithConfig(_config).Map<Source, Dest>(_source);
+        var destObj = new JsonMapper(_config).Map< Dest>(_source);
+        var destObjUsingWithConfig = new JsonMapper("--").WithConfig(_config).Map< Dest>(_source);
 
 
         Assert.AreEqual(destObj.c, destObjUsingWithConfig.c);
@@ -78,7 +78,7 @@ arr2:arr
     public void fromJson_of_Source_equals_Source_object()
     {
         var destObj = new JsonMapper(_config).Map< Dest>(_json);
-        var destObjUsingWithConfig = new JsonMapper("--").WithConfig(_config).Map<Source, Dest>(_source);
+        var destObjUsingWithConfig = new JsonMapper("--").WithConfig(_config).Map< Dest>(_source);
 
         Assert.AreEqual(destObj.c, destObjUsingWithConfig.c);
         Assert.AreEqual(destObj.n, destObjUsingWithConfig.n);
@@ -102,10 +102,10 @@ arr2:arr
     [Test]
     public void invalid_config_throw_execption()
     {
-        var ex = Assert.Throws<ArgumentOutOfRangeException>(() => new JsonMapper("--").Map<Source, Dest>(_source));
+        var ex = Assert.Throws<ArgumentOutOfRangeException>(() => new JsonMapper("--").Map< Dest>(_source));
 
         Assert.That(ex.GetType(), Is.EqualTo(typeof(ArgumentOutOfRangeException)));
-        Assert.That(() => new JsonMapper("--").Map<Source, Dest>(_source),
+        Assert.That(() => new JsonMapper("--").Map< Dest>(_source),
                     Throws.Exception
                         .TypeOf<ArgumentOutOfRangeException>()
                         .With.Property("ParamName")

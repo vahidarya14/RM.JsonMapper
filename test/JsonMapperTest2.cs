@@ -63,7 +63,7 @@ arr2:arr
     [Test]
     public void destObj_equals_destObjUsingStatic()
     {
-        var destObj = new JsonMapper(_config).Map<Source2, Dest2>(_source);
+        var destObj = new JsonMapper(_config).Map< Dest2>(_source);
         Assert.Multiple(() =>
         {
             Assert.That(destObj.p.q.r.f, Is.EqualTo(_source.arr[1].c[1].a));
